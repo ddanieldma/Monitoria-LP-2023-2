@@ -82,11 +82,30 @@ def get_hobbies(data: pd.DataFrame) -> set:
 	:rtype: set
 	:return: Set with all the hobbies in the dataframe
 	"""
-	# get the list of hobbies
-	hobbies_list = data["hobbies"].to_list()
-	
-	# and return as set
+	# get all hobbies and put them in a list
+	hobbies_list = []
+	for person_hobbies in data["hobbies"]:
+		for hobbie in person_hobbies:
+			hobbies_list.append(hobbie)
+
+	# and return the list as set to delet the repeated ones
 	return set(hobbies_list)
+
+# questao 5
+def get_people_by_hobbies (data: pd.DataFrame, hobbies: list) -> list:
+	"""get list of people acordding to their hobbies
+
+	:param pd.DataFrame data: The dataframe
+	:param list hobbies: A list with the hobbies to search for
+	"""
+	indexes = []
+	index = 0
+	for person_hobbies in data["hobbies"]:
+		if any(hobbie in hobbies for hobbie in person_hobbies):
+			indexes.append(index)
+		index += 1
+
+	print(data.loc[data.index[indexes]])
 
 
 #============Tests====================
@@ -99,11 +118,12 @@ if __name__ == "__main__":
 	# 	hobbies_list.append(list(registro))
 	# print(hobbies_list)
 
-	print(dataset)
-	print(get_ages(dataset))
-	add_person(dataset, "Daniel", 18, "Belo Horizonte", ["music", "guitar"])
-	print(dataset)
-	print(get_ages(dataset))
-	remove_person(dataset, "Daniel")
-	print(dataset)
-	print(get_ages(dataset))
+	# print(dataset)
+	# print(get_ages(dataset))
+	# add_person(dataset, "Daniel", 18, "Belo Horizonte", ["music", "guitar"])
+	# print(dataset)
+	# print(get_ages(dataset))
+	# remove_person(dataset, "Daniel")
+	# print(dataset)
+	# print(get_ages(dataset))
+	get_people_by_hobbies(dataset, ["cooking", "reading"])
