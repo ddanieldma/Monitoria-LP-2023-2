@@ -3,6 +3,7 @@ import pandas as pd
 import data
 
 dataset = pd.DataFrame(data.people_data)
+data = data.people_data
 
 #================Functions=============
 # Questão 1
@@ -92,20 +93,51 @@ def get_hobbies(data: pd.DataFrame) -> set:
 	return set(hobbies_list)
 
 # questao 5
-def get_people_by_hobbies (data: pd.DataFrame, hobbies: list) -> list:
+def get_people_by_hobbies (data: dict, hobbies: list) -> list:
 	"""get list of people acordding to their hobbies
 
-	:param pd.DataFrame data: The dataframe
+	:param dict data: The dataset
 	:param list hobbies: A list with the hobbies to search for
 	"""
 	indexes = []
 	index = 0
-	for person_hobbies in data["hobbies"]:
-		if any(hobbie in hobbies for hobbie in person_hobbies):
+
+	# getting the indexes of the people with the hobbies
+	for row in data:
+		if any(hobbie in row["hobbies"] for hobbie in hobbies):
 			indexes.append(index)
 		index += 1
+	
+	# adding the names of the people to a list
+	list_person = []
+	for element in indexes:
+		list_person.append(data[element]["name"])
 
-	print(data.loc[data.index[indexes]])
+	return list_person
+
+# questao 6
+def match_people(data: dict, name: str = None, min_age: int = None, max_age: int = None, city: str = None, hobbies: list = None):
+	
+	if min_age != None and max_age != None:
+		try:
+			if (min_age > max_age):
+				raise ValueError
+		except:
+			print("A idade mínima não pode ser maior que a idade máxima")
+			return []
+		age_defined = True
+		
+	for person in data:
+		if(age_defined):
+			if(person["age"] in range(min_age, max_age)):
+				age_right = True
+		
+
+	list_match_people = []
+	for person in data:
+		if (person["name"] == name) and (person["age"] in range(min_age, max_age)) and (person["city"] == city) and (all(hobbie in person["hobbies"] for hobbie in hobbies)):
+			list_match_people.append(person)
+
 
 
 #============Tests====================
@@ -126,4 +158,4 @@ if __name__ == "__main__":
 	# remove_person(dataset, "Daniel")
 	# print(dataset)
 	# print(get_ages(dataset))
-	get_people_by_hobbies(dataset, ["cooking", "reading"])
+	print(get_people_by_hobbies(data, ["cooking", "reading"]))
